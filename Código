@@ -1,0 +1,74 @@
+/*
+    PROGRAMA PARA SOLUCIONAR O PROBLEMAS "INFINITE COINS"
+    DESENVOLVIDO POR: DAVI MOREIRA
+
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+
+/*========== PROTOTIPOS DAS FUNCOES ============================*/
+void troco(int n); 
+void auxTroco(int restante, int indexMoeda, int *combinacao, int (*resultado)[4], int *resultadoIndex);
+/*=========================================================*/
+
+/*==================== FUNCAO PRINCIPAL =======================*/
+/*
+    a função abaixo:
+    - é a principal
+    - Onde é declarado o número inicial do troco
+    - Chamar a função que irá realizar o cálculo com o valor inserido
+*/
+int main() {
+    int n = 12; 
+    troco(n);
+    return 0;
+}
+/*================================================================*/
+
+/*====================FUNCAO PARA CALCULAR ==========================*/
+/*
+    a função abaixo:
+    - Recebe o valor para realizar o calculo
+    - Armazena os resultadoados em uma matriz
+    - Imprimir o resultadoado
+*/
+void troco(int n) {
+    int resultado[210][4];  // 210 foi um número máximo arbitrário
+    int combinacao[4] = {0};
+
+    int resultadoIndex = 0;
+    auxTroco(n, 0, combinacao, resultado, &resultadoIndex);
+
+    for (int i = 0; i < resultadoIndex; i++) {
+        printf("[%d, %d, %d, %d]\n", resultado[i][0], resultado[i][1], resultado[i][2], resultado[i][3]);
+    }
+}
+
+/*=================== FUNCAO AUXILIAR PARA A RECURSIVIDADE =============*/
+
+/*
+    a função abaixo:
+    - é uma auxliar para a recursividade
+    - Copia a combinação atual para o array de resultadoados
+    - Tenta diferentes combinações da moeda atual
+*/
+
+void auxTroco(int restante, int indexMoeda, int *combinacao, int (*resultado)[4], int *resultadoIndex) {
+    if (restante == 0) {
+        for (int i = 0; i < 4; i++) {
+            resultado[*resultadoIndex][i] = combinacao[i];
+        }
+        (*resultadoIndex)++;
+        return;
+    }
+
+    if (indexMoeda < 4) {
+        int valorMoeda = (indexMoeda == 0 ? 25 : (indexMoeda == 1 ? 10 : (indexMoeda == 2 ? 5 : 1)));
+        for (int i = 0; i <= restante / valorMoeda; i++) {
+            combinacao[indexMoeda] = i;
+            auxTroco(restante - i * valorMoeda, indexMoeda + 1, combinacao, resultado, resultadoIndex);
+        }
+    }
+}
+
